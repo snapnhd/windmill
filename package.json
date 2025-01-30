@@ -1,0 +1,24 @@
+{
+  "name": "windmill-render",
+  "version": "1.0.0",
+  "main": "setupDatabase.js",
+  "scripts": {
+    "setup-db": "node setupDatabase.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alpetric/wmilll_render.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/alpetric/wmilll_render/issues"
+  },
+  "homepage": "https://github.com/alpetric/wmilll_render#readme",
+  "description": "",
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}

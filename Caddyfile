@@ -1,0 +1,23 @@
+:10000 {
+    bind 0.0.0.0
+
+    # Redirect /minio_admin to /minio_admin/
+    redir /minio_admin /minio_admin/
+
+    # Proxy WebSocket connections
+    handle_path /ws/* {
+        reverse_proxy http://lsp-let2:3001
+    }
+
+    handle_path /ws_mp/* {
+        reverse_proxy http://mmultiplayer-tony:3002
+    }
+
+    # Proxy API search requests
+    handle_path /api/srch/* {
+        reverse_proxy http://windmill-indexer:8001
+    }
+
+    # Default catch-all reverse proxy
+    reverse_proxy http://windmill-server-xfml:8000
+}

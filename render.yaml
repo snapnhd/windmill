@@ -1,30 +1,48 @@
-databases:
-  - name: windmill-db
-    postgresMajorVersion: "16"
-    plan: basic-4gb 
-    databaseName: windmill
-    user: app_user
-      
 services:
-  # Windmill Server
-  - type: web
-    name: windmill-server
-    runtime: docker
-    image:
-      url: ghcr.io/windmill-labs/windmill-ee:main
+  # Windmill Setup DB migration setup
+  - type: worker
+    name: windmill-setup-db
+    runtime: node
+    repo: https://github.com/alpetric/wmilll_render.git
+    buildCommand: npm install
+    startCommand: npm run setup-db
     plan: starter
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
           property: connectionString
+
+  # Windmill Caddy
+  - type: web
+    name: windmill-caddy
+    runtime: docker
+    healthCheckPath: /
+    repo: https://github.com/alpetric/wmilll_render.git
+    envVars:
+      - key: BASE_URL
+        value: https://windmill-server-412l.onrender.com
+
+  # Windmill Server
+  - type: pserv
+    name: windmill-server
+    runtime: image
+    image:
+      url: ghcr.io/windmill-labs/windmill-ee:main
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: windmill-db
+          property: connectionString
+      - key: PORT
+        value: "8000"
       - key: MODE
         value: server
 
   # Windmill Worker
   - type: worker
     name: windmill-worker
-    runtime: docker
+    runtime: image
     image:
       url: ghcr.io/windmill-labs/windmill-ee:main
     plan: starter
@@ -38,15 +56,21 @@ services:
         value: worker
       - key: WORKER_GROUP
         value: default
-    disk:
-      name: worker_cache
-      mountPath: /tmp/windmill/cache
-      sizeGB: 10
+    ## NOTE:
+    # Can't mount presistent storage if numInstances > 1
+    # you can instead mount cache to s3 in instance settings
+    # or manually create multiple workers in this yaml file
+    # each with a disk as specified below:
+    #
+    # disk:
+    #   name: worker_cache
+    #   mountPath: /tmp/windmill/cache
+    #   sizeGB: 10
 
   # Windmill Native Worker
   - type: worker
     name: windmill-worker-native
-    runtime: docker
+    runtime: image
     image:
       url: ghcr.io/windmill-labs/windmill-ee:main
     plan: starter
@@ -63,3 +87,100 @@ services:
         value: "8"
       - key: SLEEP_QUEUE
         value: "200"
+
+  # New service: Windmill Indexer
+  - type: pserv
+    name: windmill-indexer
+    runtime: image
+    image:
+      url: ghcr.io/windmill-labs/windmill-ee:main
+    envVars:
+      - key: PORT
+        value: "8001"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: windmill-db
+          property: connectionString
+      - key: MODE
+        value: indexer
+
+  # New service: LSP
+  - type: pserv
+    name: lsp
+    runtime: image
+    image:
+      url: ghcr.io/windmill-labs/windmill-lsp:latest
+    envVars:
+      - key: PORT
+        value: "3001"
+    disk:
+      name: lsp_cache
+      mountPath: /pyls/.cache
+      sizeGB: 2
+
+
+  # New service: Multiplayer
+  - type: pserv
+    name: multiplayer
+    runtime: image
+    envVars:
+      - key: PORT
+        value: "3002"
+    image:
+      url: ghcr.io/windmill-labs/windmill-multiplayer:latest
+  
+   # A private service with an attached persistent disk
+  - type: web
+    name: minio-server
+    healthCheckPath: /minio/health/live
+    runtime: image
+    image:
+      url: docker.io/minio/minio:latest
+    dockerCommand: minio server /data --address $HOST:$PORT --console-address $HOST:$CONSOLE_PORT
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 2
+    envVars:
+    - key: MINIO_ROOT_USER
+      generateValue: true
+    - key: MINIO_ROOT_PASSWORD
+      generateValue: true
+    - key: HOST
+      value: "0.0.0.0"
+    - key: PORT
+      value: 9000
+    - key: CONSOLE_PORT
+      value: 9090
+  
+  - type: web
+    name: minio-console
+    runtime: docker
+    repo: https://github.com/render-examples/minio
+    dockerContext: /
+    dockerfilePath: ./Dockerfile
+    envVars:
+    - key: PORT
+      value: 10000
+    - key: MINIO_HOST
+      fromService:
+        name: minio-server
+        type: web
+        property: host
+    - key: MINIO_CONSOLE_PORT
+      fromService:
+        name: minio-server
+        type: web
+        envVarKey: CONSOLE_PORT
+
+
+databases:
+  - name: windmill-db
+    postgresMajorVersion: "16"
+    # NOTE: scale as needed
+    plan: basic-4gb
+    databaseName: windmill
+    user: windmill
+    ## NOTE: enable for prod
+    # highAvailability:
+    #   enabled: true
