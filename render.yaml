@@ -1,0 +1,70 @@
+databases:
+  - name: windmill-db
+    postgresMajorVersion: "16"
+    plan: basic-4gb 
+    databaseName: windmill
+    user: app_user
+      
+services:
+  # Windmill Server
+  - type: web
+    name: windmill-server
+    runtime: docker
+    image:
+      url: ghcr.io/windmill-labs/windmill-ee:main
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: windmill-db
+          property: connectionString
+      - key: MODE
+        value: server
+
+  # Windmill Worker
+  - type: worker
+    name: windmill-worker
+    runtime: docker
+    image:
+      url: ghcr.io/windmill-labs/windmill-ee:main
+    plan: starter
+    scaling:
+      minInstances: 3
+      maxInstances: 3
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: windmill-db
+          property: connectionString
+      - key: MODE
+        value: worker
+      - key: WORKER_GROUP
+        value: default
+    disk:
+      name: worker_cache
+      mountPath: /tmp/windmill/cache
+      sizeGB: 10
+
+  # Windmill Native Worker
+  - type: worker
+    name: windmill-worker-native
+    runtime: docker
+    image:
+      url: ghcr.io/windmill-labs/windmill-ee:main
+    plan: starter
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: windmill-db
+          property: connectionString
+      - key: MODE
+        value: worker
+      - key: WORKER_GROUP
+        value: native
+      - key: NUM_WORKERS
+        value: "8"
+      - key: SLEEP_QUEUE
+        value: "200"
