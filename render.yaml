@@ -20,9 +20,27 @@ services:
     healthCheckPath: /
     repo: https://github.com/alpetric/wmilll_render.git
     envVars:
-      - key: BASE_URL
-        value: https://windmill-server-412l.onrender.com
-
+      - key: WINDMILL_SERVER_HOST
+        fromService:
+          name: windmill-server
+          type: pserv
+          property: host
+      - key: LSP_HOST
+        fromService:
+          name: lsp
+          type: pserv
+          property: host
+      - key: MULTIPLAYER_HOST
+        fromService:
+          name: multiplayer
+          type: pserv
+          property: host
+      - key: INDEXER_HOST
+        fromService:
+          name: windmill-indexer
+          type: pserv
+          property: host
+          
   # Windmill Server
   - type: pserv
     name: windmill-server
