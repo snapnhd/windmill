@@ -157,7 +157,6 @@ services:
     disk:
       name: data
       mountPath: /data
-      sizeGB: 2
     envVars:
     - key: MINIO_ROOT_USER
       generateValue: true
