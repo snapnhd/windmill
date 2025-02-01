@@ -122,7 +122,7 @@ services:
 
   # New service: LSP
   - type: pserv
-    name: lsp
+    name: windmill-lsp
     runtime: image
     image:
       url: ghcr.io/windmill-labs/windmill-lsp:latest
@@ -136,7 +136,7 @@ services:
 
   # New service: Multiplayer
   - type: pserv
-    name: multiplayer
+    name: windmill-multiplayer
     runtime: image
     envVars:
       - key: PORT
@@ -146,7 +146,7 @@ services:
   
    # A private service with an attached persistent disk
   - type: web
-    name: minio-server
+    name: windmill-minio-server
     healthCheckPath: /minio/health/live
     runtime: image
     image:
@@ -168,7 +168,7 @@ services:
       value: 9090
   
   - type: web
-    name: minio-console
+    name: windmill-minio-console
     runtime: docker
     repo: https://github.com/render-examples/minio
     dockerContext: /
