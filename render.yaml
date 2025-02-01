@@ -6,7 +6,6 @@ services:
     repo: https://github.com/alpetric/wmilll_render.git
     buildCommand: npm install
     startCommand: npm run setup-db
-    plan: starter
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -63,7 +62,6 @@ services:
     runtime: image
     image:
       url: ghcr.io/windmill-labs/windmill-ee:main
-    plan: starter
     numInstances: 3
     envVars:
       - key: DATABASE_URL
