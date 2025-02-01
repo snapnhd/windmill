@@ -26,12 +26,12 @@ services:
           property: host
       - key: LSP_HOST
         fromService:
-          name: lsp
+          name: windmill-lsp
           type: pserv
           property: host
       - key: MULTIPLAYER_HOST
         fromService:
-          name: multiplayer
+          name: windmill-multiplayer
           type: pserv
           property: host
       - key: INDEXER_HOST
@@ -178,12 +178,12 @@ services:
       value: 10000
     - key: MINIO_HOST
       fromService:
-        name: minio-server
+        name: windmill-minio-server
         type: web
         property: host
     - key: MINIO_CONSOLE_PORT
       fromService:
-        name: minio-server
+        name: windmill-minio-server
         type: web
         envVarKey: CONSOLE_PORT
 
