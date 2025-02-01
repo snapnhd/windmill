@@ -3,16 +3,16 @@
 
     # Proxy WebSocket connections
     handle_path /ws/* {
-        reverse_proxy /ws/* http://{$LSP_HOST}:3001
+        reverse_proxy http://{$LSP_HOST}:3001/ws/*
     }
 
     handle_path /ws_mp/* {
-        reverse_proxy /ws_mp/* http://{$MULTIPLAYER_HOST}:3002
+        reverse_proxy http://{$MULTIPLAYER_HOST}:3002/ws_mp/*
     }
 
     # Proxy API search requests
     handle_path /api/srch/* {
-        reverse_proxy /api/srch/* http://{$INDEXER_HOST}:8001
+        reverse_proxy http://{$INDEXER_HOST}:8001/api/srch/*
     }
 
     # Default catch-all reverse proxy
