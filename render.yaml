@@ -3,7 +3,7 @@ services:
   - type: worker
     name: windmill-setup-db
     runtime: node
-    repo: https://github.com/alpetric/wmilll_render.git
+    repo: https://github.com/cj/wmilll_render.git
     buildCommand: npm install
     startCommand: npm run setup-db
     envVars:
@@ -17,7 +17,7 @@ services:
     name: windmill-caddy
     runtime: docker
     healthCheckPath: /
-    repo: https://github.com/alpetric/wmilll_render.git
+    repo: https://github.com/cj/wmilll_render.git
     envVars:
       - key: WINDMILL_SERVER_HOST
         fromService:
