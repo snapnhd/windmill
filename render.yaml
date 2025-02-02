@@ -7,7 +7,7 @@ services:
     buildCommand: npm install
     startCommand: npm run setup-db
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         value: "true"
       - key: DATABASE_URL
         fromDatabase:
@@ -21,11 +21,51 @@ services:
     healthCheckPath: /
     repo: https://github.com/cj/wmilll_render.git
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
+      - key: MINIO_SERVER_READY
+        fromService:
+          name: windmill-minio-server
+          type: web
+          envVarKey: WINDMILL_SETUP
+      - key: MINIO_CONSOLE_READY
+        fromService:
+          name: windmill-minio-console
+          type: web
+          envVarKey: WINDMILL_SETUP
+      - key: SERVER_READY
+        fromService:
+          name: windmill-server
+          type: pserv
+          envVarKey: WINDMILL_SETUP
+      - key: INDEXER_READY
+        fromService:
+          name: windmill-indexer
+          type: pserv
+          envVarKey: WINDMILL_SETUP
+      - key: WORKER_READY
+        fromService:
+          name: windmill-worker
+          type: worker
+          envVarKey: WINDMILL_SETUP
+      - key: WORKER_NATIVE_READY
+        fromService:
+          name: windmill-worker-native
+          type: worker
+          envVarKey: WINDMILL_SETUP
+      - key: MULTIPLAYER_READY
+        fromService:
+          name: windmill-multiplayer
+          type: pserv
+          envVarKey: WINDMILL_SETUP
+      - key: LSP_READY
+        fromService:
+          name: windmill-lsp
+          type: pserv
+          envVarKey: WINDMILL_SETUP
       - key: WINDMILL_SERVER_HOST
         fromService:
           name: windmill-server
@@ -54,11 +94,16 @@ services:
     image:
       url: ghcr.io/windmill-labs/windmill-ee:main
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
+      - key: SERVER_READY
+        fromService:
+          name: windmill-server
+          type: pserv
+          envVarKey: WINDMILL_SETUP
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
@@ -76,11 +121,11 @@ services:
       url: ghcr.io/windmill-labs/windmill-ee:main
     numInstances: 3
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
@@ -128,11 +173,16 @@ services:
     image:
       url: ghcr.io/windmill-labs/windmill-ee:main
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
+      - key: MINIO_SERVER_READY
+        fromService:
+          name: windmill-minio-server
+          type: web
+          envVarKey: WINDMILL_SETUP
       - key: PORT
         value: "8001"
       - key: DATABASE_URL
@@ -149,11 +199,11 @@ services:
     image:
       url: ghcr.io/windmill-labs/windmill-lsp:latest
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
       - key: PORT
         value: "3001"
     disk:
@@ -165,11 +215,11 @@ services:
     name: windmill-multiplayer
     runtime: image
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
       - key: PORT
         value: "3002"
     image:
@@ -187,11 +237,11 @@ services:
       name: data
       mountPath: /data
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
       - key: MINIO_ROOT_USER
         generateValue: true
       - key: MINIO_ROOT_PASSWORD
@@ -210,11 +260,11 @@ services:
     dockerContext: /
     dockerfilePath: ./Dockerfile
     envVars:
-      - key: WINDMILL_SETUP_DB
+      - key: WINDMILL_SETUP
         fromService:
           name: windmill-setup-db
           type: worker
-          envVarKey: WINDMILL_SETUP_DB
+          envVarKey: WINDMILL_SETUP
       - key: PORT
         value: 10000
       - key: MINIO_HOST
