@@ -19,6 +19,11 @@ services:
     healthCheckPath: /
     repo: https://github.com/cj/wmilll_render.git
     envVars:
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
       - key: WINDMILL_SERVER_HOST
         fromService:
           name: windmill-server
@@ -39,7 +44,7 @@ services:
           name: windmill-indexer
           type: pserv
           property: host
-          
+
   # Windmill Server
   - type: pserv
     name: windmill-server
@@ -47,6 +52,11 @@ services:
     image:
       url: ghcr.io/windmill-labs/windmill-ee:main
     envVars:
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
@@ -64,6 +74,11 @@ services:
       url: ghcr.io/windmill-labs/windmill-ee:main
     numInstances: 3
     envVars:
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
@@ -111,6 +126,11 @@ services:
     image:
       url: ghcr.io/windmill-labs/windmill-ee:main
     envVars:
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
       - key: PORT
         value: "8001"
       - key: DATABASE_URL
@@ -127,24 +147,33 @@ services:
     image:
       url: ghcr.io/windmill-labs/windmill-lsp:latest
     envVars:
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
       - key: PORT
         value: "3001"
     disk:
       name: lsp_cache
       mountPath: /pyls/.cache
 
-
   # New service: Multiplayer
   - type: pserv
     name: windmill-multiplayer
     runtime: image
     envVars:
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
       - key: PORT
         value: "3002"
     image:
       url: ghcr.io/windmill-labs/windmill-multiplayer:latest
-  
-   # A private service with an attached persistent disk
+
+    # A private service with an attached persistent disk
   - type: web
     name: windmill-minio-server
     healthCheckPath: /minio/health/live
@@ -156,17 +185,22 @@ services:
       name: data
       mountPath: /data
     envVars:
-    - key: MINIO_ROOT_USER
-      generateValue: true
-    - key: MINIO_ROOT_PASSWORD
-      generateValue: true
-    - key: HOST
-      value: "0.0.0.0"
-    - key: PORT
-      value: 9000
-    - key: CONSOLE_PORT
-      value: 9090
-  
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
+      - key: MINIO_ROOT_USER
+        generateValue: true
+      - key: MINIO_ROOT_PASSWORD
+        generateValue: true
+      - key: HOST
+        value: "0.0.0.0"
+      - key: PORT
+        value: 9000
+      - key: CONSOLE_PORT
+        value: 9090
+
   - type: web
     name: windmill-minio-console
     runtime: docker
@@ -174,19 +208,23 @@ services:
     dockerContext: /
     dockerfilePath: ./Dockerfile
     envVars:
-    - key: PORT
-      value: 10000
-    - key: MINIO_HOST
-      fromService:
-        name: windmill-minio-server
-        type: web
-        property: host
-    - key: MINIO_CONSOLE_PORT
-      fromService:
-        name: windmill-minio-server
-        type: web
-        envVarKey: CONSOLE_PORT
-
+      - key: WINDMILL_SETUP_DB
+        fromService:
+          name: windmill-setup-db
+          type: pserv
+          property: host
+      - key: PORT
+        value: 10000
+      - key: MINIO_HOST
+        fromService:
+          name: windmill-minio-server
+          type: web
+          property: host
+      - key: MINIO_CONSOLE_PORT
+        fromService:
+          name: windmill-minio-server
+          type: web
+          envVarKey: CONSOLE_PORT
 
 databases:
   - name: windmill-db
