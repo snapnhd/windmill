@@ -7,6 +7,8 @@ services:
     buildCommand: npm install
     startCommand: npm run setup-db
     envVars:
+      - key: WINDMILL_SETUP_DB
+        value: "true"
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
@@ -22,8 +24,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: WINDMILL_SERVER_HOST
         fromService:
           name: windmill-server
@@ -55,8 +57,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
@@ -77,8 +79,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: DATABASE_URL
         fromDatabase:
           name: windmill-db
@@ -129,8 +131,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: PORT
         value: "8001"
       - key: DATABASE_URL
@@ -150,8 +152,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: PORT
         value: "3001"
     disk:
@@ -166,8 +168,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: PORT
         value: "3002"
     image:
@@ -188,8 +190,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: MINIO_ROOT_USER
         generateValue: true
       - key: MINIO_ROOT_PASSWORD
@@ -211,8 +213,8 @@ services:
       - key: WINDMILL_SETUP_DB
         fromService:
           name: windmill-setup-db
-          type: pserv
-          property: host
+          type: worker
+          envVarKey: WINDMILL_SETUP_DB
       - key: PORT
         value: 10000
       - key: MINIO_HOST
