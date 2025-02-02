@@ -285,7 +285,7 @@ services:
         fromService:
           name: windmill-minio-server
           type: web
-          envVarKey: WINDMILL_CONSOLE_PORT
+          envVarKey: CONSOLE_PORT
       - key: WINDMILL_MINIO_CONSOLE_READY
         value: "true"
 
