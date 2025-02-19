@@ -4,7 +4,7 @@
     reverse_proxy /ws/* http://{$LSP_HOST}:3001
     reverse_proxy /ws_mp/* http://{$MULTIPLAYER_HOST}:3002
     reverse_proxy /api/srch/* http://{$INDEXER_HOST}:8001
-    reverse_proxy http://{$WINDMILL_SERVER_HOST}/metrics:8001
+    reverse_proxy /metrics http://{$WINDMILL_SERVER_HOST}:8001
 
     # Default catch-all reverse proxy
     reverse_proxy http://{$WINDMILL_SERVER_HOST}:8000
