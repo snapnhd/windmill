@@ -1,11 +1,11 @@
-:10000 {
+http://:10000 {
     bind 0.0.0.0
 
-    reverse_proxy /ws/* http://{$LSP_HOST}:3001
-    reverse_proxy /ws_mp/* http://{$MULTIPLAYER_HOST}:3002
-    reverse_proxy /api/srch/* http://{$INDEXER_HOST}:8001
-    # reverse_proxy /metrics http://{$WINDMILL_SERVER_HOST}:8001
+    reverse_proxy /ws/* {$LSP_ORIGIN}
+    reverse_proxy /ws_mp/* {$MULTIPLAYER_ORIGIN}
+    reverse_proxy /api/srch/* {$INDEXER_ORIGIN}
+    # reverse_proxy /metrics https://{$WINDMILL_SERVER_HOST}
 
     # Default catch-all reverse proxy
-    reverse_proxy http://{$WINDMILL_SERVER_HOST}:8000
+    reverse_proxy {$WINDMILL_SERVER_ORIGIN}
 }
