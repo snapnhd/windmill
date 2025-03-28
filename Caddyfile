@@ -9,5 +9,5 @@ http://:10000 {
     # reverse_proxy /metrics https://{$WINDMILL_SERVER_HOST}
 
     # Default catch-all reverse proxy
-    reverse_proxy http://localhost:10000
+    reverse_proxy {$SERVER_ORIGIN}
 }
