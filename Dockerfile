@@ -17,7 +17,8 @@ RUN mkdir -p /data/caddy/locks \
     && chown -R caddy:caddy /config \
     && chmod +x /usr/bin/caddy \
     && chown caddy:caddy /usr/bin/caddy \
-    && chown -R caddy:caddy /app
+    && chown -R caddy:caddy /app \
+    && chmod +x /app/dbMigration.sh
 
 # Expose the port specified in your Caddyfile (10000)
 EXPOSE 10000
