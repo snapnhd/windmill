@@ -10,6 +10,6 @@ echo "npm installation completed."
 echo "Starting node application..."
 
 # Execute the Node.js script
-node setupDatabase.js
+node ./setupDatabase.js
 
 echo "DB Migration completed."
