@@ -5,7 +5,7 @@ FROM caddy:2-alpine
 COPY Caddyfile /etc/caddy/Caddyfile
 
 # Copy the specified files
-COPY package.json package-lock.json setupDatabase.js dbMigration.sh /app/
+COPY package.json package-lock.json setupDatabase.js /app/
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /data/caddy/locks \
@@ -17,8 +17,18 @@ RUN mkdir -p /data/caddy/locks \
     && chown -R caddy:caddy /config \
     && chmod +x /usr/bin/caddy \
     && chown caddy:caddy /usr/bin/caddy \
-    && chown -R caddy:caddy /app \
-    && chmod +x /app/dbMigration.sh
+    && chown -R caddy:caddy /app 
+
+RUN if [ "$DB_MIGRATION" = "1" ]; then \
+        echo "Running database migration..." && \
+        apk add --no-cache nodejs npm && \
+        cd /app && \
+        npm install && \
+        node setupDatabase.js; \
+    else \
+        echo "Skipping database migration."; \
+    fi
+    
 
 # Expose the port specified in your Caddyfile (10000)
 EXPOSE 10000
