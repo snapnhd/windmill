@@ -22,17 +22,6 @@ RUN mkdir -p /data/caddy/locks \
     && chown caddy:caddy /usr/bin/caddy \
     && chown -R caddy:caddy /app 
 
-RUN if [ "$DB_MIGRATION" = "1" ]; then \
-        echo "Running database migration..." && \
-        apk add --no-cache nodejs npm && \
-        cd /app && \
-        npm install && \
-        node setupDatabase.js; \
-    else \
-        echo "Skipping database migration."; \
-    fi
-    
-
 # Expose the port specified in your Caddyfile (10000)
 EXPOSE 10000
 
