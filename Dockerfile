@@ -1,14 +1,8 @@
 # Use the official Caddy image as base
 FROM caddy:2-alpine
 
-ARG DB_MIGRATION=0
-ENV DB_MIGRATION=${DB_MIGRATION}
-
 # Copy the local Caddyfile to the container
 COPY Caddyfile /etc/caddy/Caddyfile
-
-# Copy the specified files
-COPY package.json package-lock.json setupDatabase.js /app/
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /data/caddy/locks \
