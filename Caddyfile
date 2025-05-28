@@ -1,7 +1,7 @@
 http://:10000 {
     bind 0.0.0.0
 
-    respond /health 200
+    respond /healthz 200
 
     reverse_proxy /ws/* {$LSP_ORIGIN}
     reverse_proxy /ws_mp/* {$MULTIPLAYER_ORIGIN}
