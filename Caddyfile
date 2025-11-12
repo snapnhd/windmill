@@ -1,13 +1,9 @@
-http://:10000 {
+:10000 {
     bind 0.0.0.0
-
+    header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     respond /healthz 200
-
     reverse_proxy /ws/* {$LSP_ORIGIN}
     reverse_proxy /ws_mp/* {$MULTIPLAYER_ORIGIN}
     reverse_proxy /api/srch/* {$INDEXER_ORIGIN}
-    # reverse_proxy /metrics https://{$WINDMILL_SERVER_HOST}
-
-    # Default catch-all reverse proxy
     reverse_proxy {$SERVER_ORIGIN}
 }
